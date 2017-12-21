@@ -4,6 +4,8 @@
   "description": "react-datetime",
   "scripts": {
     "start": "node server.js",
+    "build": "npm run clean && babel src --out-dir dist",
+    "clean": "rimraf dist",
     "lint": "eslint src"
   },
   "repository": {
