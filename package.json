@@ -2,6 +2,7 @@
   "name": "newage-react-datetime",
   "version": "1.0.0",
   "description": "react-datetime",
+  "main": "dist/DateTime.js",
   "scripts": {
     "start": "node server.js",
     "build": "npm run clean && babel src --out-dir dist",
