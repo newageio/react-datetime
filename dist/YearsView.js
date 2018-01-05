@@ -125,13 +125,29 @@ var YearsView = function (_Component) {
             _react2.default.createElement(
               'tr',
               null,
-              _react2.default.createElement('th', { key: 'prev', className: 'rdtPrev', onClick: this.props.subtractTime(10, 'years') }),
+              _react2.default.createElement(
+                'th',
+                { key: 'prev', className: 'rdtPrev', onClick: this.props.subtractTime(10, 'years') },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '\u2039'
+                )
+              ),
               _react2.default.createElement(
                 'th',
                 { key: 'year', className: 'rdtSwitch', onClick: this.props.showView('years'), colSpan: 2 },
                 year + '-' + (year + 9)
               ),
-              _react2.default.createElement('th', { key: 'next', className: 'rdtNext', onClick: this.props.addTime(10, 'years') })
+              _react2.default.createElement(
+                'th',
+                { key: 'next', className: 'rdtNext', onClick: this.props.addTime(10, 'years') },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '\u203A'
+                )
+              )
             )
           )
         ),
