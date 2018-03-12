@@ -120,7 +120,7 @@ class DaysView extends Component {
                 props.className = 'active';
               }
 
-              const isDisabled = !isValid(moment().set({ hour, minute: 0, second: 0 }), selected);
+              const isDisabled = !isValid(selected.clone().set({ hour, minute: 0, second: 0 }), selected);
               if (isDisabled) {
                 props.className = `${props.className} rdtDisabled`;
               } else {
