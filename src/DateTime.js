@@ -58,7 +58,7 @@ class DateTime extends Component {
     withTime: false,
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     const state = this.getStateFromProps(this.props);
@@ -153,7 +153,7 @@ class DateTime extends Component {
     return 'days';
   };
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     const formats = this.getFormats(nextProps);
     let updatedState = {};
 
@@ -176,8 +176,7 @@ class DateTime extends Component {
 
     if (nextProps.locale !== this.props.locale) {
       if (this.state.viewDate) {
-        const updatedViewDate = this.state.viewDate.clone().locale(nextProps.locale);
-        updatedState.viewDate = updatedViewDate;
+        updatedState.viewDate = this.state.viewDate.clone().locale(nextProps.locale);
       }
       if (this.state.selectedDate) {
         const updatedSelectedDate = this.state.selectedDate.clone().locale(nextProps.locale);
@@ -322,7 +321,7 @@ class DateTime extends Component {
       .milliseconds(currentDate.milliseconds());
 
     if (!this.props.value) {
-      const open = !( this.props.closeOnSelect && close );
+      const open = !(this.props.closeOnSelect && close);
       if (!open) {
         this.props.onBlur(date);
       }
@@ -371,7 +370,7 @@ class DateTime extends Component {
   };
 
   getComponentProps = () => {
-    var me = this;
+    const me = this;
     const props = this.props;
     const state = this.state;
 
@@ -397,11 +396,11 @@ class DateTime extends Component {
     return resultProps;
   };
 
-  render () {
+  render() {
     const { input, inputProps, renderInput, timePresets, withTime } = this.props;
     const { inputValue, open, currentView } = this.state;
 
-    let className = 'rdt' + (this.props.className ? ( Array.isArray(this.props.className) ? ' ' + this.props.className.join(' ') : ' ' + this.props.className) : ''),
+    let className = 'rdt' + (this.props.className ? (Array.isArray(this.props.className) ? ' ' + this.props.className.join(' ') : ' ' + this.props.className) : ''),
       children = [];
 
     if (input) {
@@ -420,11 +419,11 @@ class DateTime extends Component {
         children = [React.createElement('input', assign({ key: 'i' }, finalInputProps))];
       }
     } else {
-      className += ' rdtStatic';
+      className = `${className} rdtStatic`;
     }
 
     if (open) {
-      className += ' rdtOpen';
+      className = `${className} rdtOpen`;
     }
 
     return (
