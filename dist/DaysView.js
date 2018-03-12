@@ -149,6 +149,7 @@ var DaysView = function (_Component) {
             'Time Picker'
           ),
           [].concat(_toConsumableArray(Array(24).keys())).map(function (hour) {
+            var time = selected && selected.clone().set({ hour: hour, minute: 0, second: 0 });
             var props = {
               className: ''
             };
@@ -157,7 +158,7 @@ var DaysView = function (_Component) {
               props.className = 'active';
             }
 
-            var isDisabled = !isValid(selected.clone().set({ hour: hour, minute: 0, second: 0 }), selected);
+            var isDisabled = !isValid(time, selected);
             if (isDisabled) {
               props.className = props.className + ' rdtDisabled';
             } else {

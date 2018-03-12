@@ -112,6 +112,7 @@ class DaysView extends Component {
           <li>Time Picker</li>
           {
             [...Array(24).keys()].map(hour => {
+              const time = selected && selected.clone().set({ hour, minute: 0, second: 0 });
               const props = {
                 className: '',
               };
@@ -120,7 +121,7 @@ class DaysView extends Component {
                 props.className = 'active';
               }
 
-              const isDisabled = !isValid(selected.clone().set({ hour, minute: 0, second: 0 }), selected);
+              const isDisabled = !isValid(time, selected);
               if (isDisabled) {
                 props.className = `${props.className} rdtDisabled`;
               } else {
