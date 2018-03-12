@@ -92,8 +92,7 @@ var DateTime = function (_Component) {
 
       if (nextProps.locale !== this.props.locale) {
         if (this.state.viewDate) {
-          var updatedViewDate = this.state.viewDate.clone().locale(nextProps.locale);
-          updatedState.viewDate = updatedViewDate;
+          updatedState.viewDate = this.state.viewDate.clone().locale(nextProps.locale);
         }
         if (this.state.selectedDate) {
           var updatedSelectedDate = this.state.selectedDate.clone().locale(nextProps.locale);
@@ -160,11 +159,11 @@ var DateTime = function (_Component) {
           children = [_react2.default.createElement('input', (0, _objectAssign2.default)({ key: 'i' }, finalInputProps))];
         }
       } else {
-        className += ' rdtStatic';
+        className = className + ' rdtStatic';
       }
 
       if (open) {
-        className += ' rdtOpen';
+        className = className + ' rdtOpen';
       }
 
       return _react2.default.createElement(

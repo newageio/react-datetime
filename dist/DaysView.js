@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -77,15 +79,15 @@ var DaysView = function (_Component) {
         classes = 'rdtDay';
         currentDate = prevMonth.clone();
 
-        if (prevMonth.year() === currentYear && prevMonth.month() < currentMonth || prevMonth.year() < currentYear) classes += ' rdtOld';else if (prevMonth.year() === currentYear && prevMonth.month() > currentMonth || prevMonth.year() > currentYear) classes += ' rdtNew';
+        if (prevMonth.year() === currentYear && prevMonth.month() < currentMonth || prevMonth.year() < currentYear) classes = classes + ' rdtOld';else if (prevMonth.year() === currentYear && prevMonth.month() > currentMonth || prevMonth.year() > currentYear) classes = classes + ' rdtNew';
 
-        if (selected && prevMonth.isSame(selected, 'day')) classes += ' rdtActive';
+        if (selected && prevMonth.isSame(selected, 'day')) classes = classes + ' rdtActive';
 
-        if (prevMonth.isSame((0, _moment2.default)(), 'day')) classes += ' rdtToday';
+        if (prevMonth.isSame((0, _moment2.default)(), 'day')) classes = classes + ' rdtToday';
 
         isDisabled = !isValid(currentDate, selected);
         if (isDisabled) {
-          classes += ' rdtDisabled';
+          classes = classes + ' rdtDisabled';
         }
 
         dayProps = {
@@ -122,16 +124,17 @@ var DaysView = function (_Component) {
         _this.props.setTime('hours', value);
       };
     }, _this.renderTimePresets = function () {
+      var isValid = _this.props.isValidDate || _this.alwaysValidDate;
+      var selected = _this.props.selectedDate && _this.props.selectedDate.clone();
+
       if (!_this.props.timePresets) {
         return null;
       }
 
       var currentHour = false;
-      var selectedDate = _this.props.selectedDate;
 
-
-      if (selectedDate instanceof _moment2.default) {
-        currentHour = selectedDate ? selectedDate.get('hour') : null;
+      if (selected instanceof _moment2.default) {
+        currentHour = selected ? selected.get('hour') : null;
       }
 
       return _react2.default.createElement(
@@ -145,16 +148,26 @@ var DaysView = function (_Component) {
             null,
             'Time Picker'
           ),
-          [].concat(_toConsumableArray(Array(25).keys())).map(function (h) {
-            var isActive = currentHour && currentHour === h && selectedDate.get('minute') === 0;
+          [].concat(_toConsumableArray(Array(24).keys())).map(function (hour) {
+            var props = {
+              className: ''
+            };
+
+            if (currentHour && currentHour === hour && selected.get('minute') === 0) {
+              props.className = 'active';
+            }
+
+            var isDisabled = !isValid((0, _moment2.default)().set({ hour: hour, minute: 0, second: 0 }), selected);
+            if (isDisabled) {
+              props.className = props.className + ' rdtDisabled';
+            } else {
+              props.onClick = _this.handleSetTime(hour);
+            }
 
             return _react2.default.createElement(
               'li',
-              {
-                className: (0, _classnames2.default)({ active: isActive }),
-                onClick: _this.handleSetTime(h), colSpan: 7, key: h
-              },
-              h + ':00'
+              _extends({}, props, { colSpan: 7, key: hour }),
+              hour + ':00'
             );
           })
         )

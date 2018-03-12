@@ -82,8 +82,8 @@ var TimeView = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var me = this,
-          counters = [];
+      var me = this;
+      var counters = [];
 
       this.state.counters.forEach(function (c) {
         if (counters.length) counters.push(_react2.default.createElement('div', {
@@ -184,6 +184,7 @@ var _initialiseProps = function _initialiseProps() {
   this.renderCounter = function (type) {
     if (type !== 'daypart') {
       var value = _this2.state[type];
+
       if (type === 'hours' && _this2.props.timeFormat.toLowerCase().indexOf(' a') !== -1) {
         value = (value - 1) % 12 + 1;
 
@@ -222,21 +223,11 @@ var _initialiseProps = function _initialiseProps() {
 
   this.updateMilli = function (e) {
     var milli = parseInt(e.target.value, 10);
+
     if (milli === e.target.value && milli >= 0 && milli < 1000) {
       _this2.props.setTime('milliseconds', milli);
       _this2.setState({ milliseconds: milli });
     }
-  };
-
-  this.renderHeader = function () {
-    if (!_this2.props.dateFormat) return null;
-
-    var date = _this2.props.selectedDate || _this2.props.viewDate;
-    return _react2.default.createElement('thead', { key: 'h' }, _react2.default.createElement('tr', {}, _react2.default.createElement('th', {
-      className: 'rdtSwitch',
-      colSpan: 4,
-      onClick: _this2.props.showView('days')
-    }, date.format(_this2.props.dateFormat))));
   };
 
   this.onStartClicking = function (action, type) {
@@ -273,27 +264,42 @@ var _initialiseProps = function _initialiseProps() {
   this.toggleDayPart = function (type) {
     // type is always 'hours'
     var value = parseInt(_this2.state[type], 10) + 12;
-    if (value > _this2.timeConstraints[type].max) value = _this2.timeConstraints[type].min + (value - (_this2.timeConstraints[type].max + 1));
+
+    if (value > _this2.timeConstraints[type].max) {
+      value = _this2.timeConstraints[type].min + (value - (_this2.timeConstraints[type].max + 1));
+    }
+
     return _this2.pad(type, value);
   };
 
   this.increase = function (type) {
     var value = parseInt(_this2.state[type], 10) + _this2.timeConstraints[type].step;
-    if (value > _this2.timeConstraints[type].max) value = _this2.timeConstraints[type].min + (value - (_this2.timeConstraints[type].max + 1));
+
+    if (value > _this2.timeConstraints[type].max) {
+      value = _this2.timeConstraints[type].min + (value - (_this2.timeConstraints[type].max + 1));
+    }
+
     return _this2.pad(type, value);
   };
 
   this.decrease = function (type) {
     var value = parseInt(_this2.state[type], 10) - _this2.timeConstraints[type].step;
-    if (value < _this2.timeConstraints[type].min) value = _this2.timeConstraints[type].max + 1 - (_this2.timeConstraints[type].min - value);
+
+    if (value < _this2.timeConstraints[type].min) {
+      value = _this2.timeConstraints[type].max + 1 - (_this2.timeConstraints[type].min - value);
+    }
+
     return _this2.pad(type, value);
   };
 
   this.pad = function (type, value) {
     var str = value + '';
+
     while (str.length < PAD_VALUES[type]) {
       str = '0' + str;
-    }return str;
+    }
+
+    return str;
   };
 
   this.handleClickOutside = function () {
