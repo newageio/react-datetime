@@ -158,7 +158,7 @@ var DaysView = function (_Component) {
               props.className = 'active';
             }
 
-            var isDisabled = !isValid(time, selected);
+            var isDisabled = time ? !isValid(time, selected) : true;
             if (isDisabled) {
               props.className = props.className + ' rdtDisabled';
             } else {
