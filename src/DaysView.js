@@ -10,7 +10,7 @@ class DaysView extends Component {
     let i = 0;
 
     days.forEach(function (day) {
-      dow[(7 + ( i++ ) - first) % 7] = day;
+      dow[(7 + (i++) - first) % 7] = day;
     });
 
     return dow;
@@ -37,20 +37,20 @@ class DaysView extends Component {
       classes = 'rdtDay';
       currentDate = prevMonth.clone();
 
-      if (( prevMonth.year() === currentYear && prevMonth.month() < currentMonth ) || ( prevMonth.year() < currentYear ))
-        classes += ' rdtOld';
-      else if (( prevMonth.year() === currentYear && prevMonth.month() > currentMonth ) || ( prevMonth.year() > currentYear ))
-        classes += ' rdtNew';
+      if ((prevMonth.year() === currentYear && prevMonth.month() < currentMonth) || (prevMonth.year() < currentYear))
+        classes = `${classes} rdtOld`;
+      else if ((prevMonth.year() === currentYear && prevMonth.month() > currentMonth) || (prevMonth.year() > currentYear))
+        classes = `${classes} rdtNew`;
 
       if (selected && prevMonth.isSame(selected, 'day'))
-        classes += ' rdtActive';
+        classes = `${classes} rdtActive`;
 
       if (prevMonth.isSame(moment(), 'day'))
-        classes += ' rdtToday';
+        classes = `${classes} rdtToday`;
 
       isDisabled = !isValid(currentDate, selected);
       if (isDisabled) {
-        classes += ' rdtDisabled';
+        classes = `${classes} rdtDisabled`;
       }
 
       dayProps = {
@@ -93,15 +93,17 @@ class DaysView extends Component {
   };
 
   renderTimePresets = () => {
+    const isValid = this.props.isValidDate || this.alwaysValidDate;
+    const selected = this.props.selectedDate && this.props.selectedDate.clone();
+
     if (!this.props.timePresets) {
       return null;
     }
 
     let currentHour = false;
-    const { selectedDate } = this.props;
 
-    if (selectedDate instanceof moment) {
-      currentHour = selectedDate ? selectedDate.get('hour') : null;
+    if (selected instanceof moment) {
+      currentHour = selected ? selected.get('hour') : null;
     }
 
     return (
@@ -109,15 +111,25 @@ class DaysView extends Component {
         <ul>
           <li>Time Picker</li>
           {
-            [...Array(25).keys()].map(h => {
-              const isActive = currentHour && currentHour === h && selectedDate.get('minute') === 0;
+            [...Array(24).keys()].map(hour => {
+              const props = {
+                className: '',
+              };
+
+              if (currentHour && currentHour === hour && selected.get('minute') === 0) {
+                props.className = 'active';
+              }
+
+              const isDisabled = !isValid(moment().set({ hour, minute: 0, second: 0 }), selected);
+              if (isDisabled) {
+                props.className = `${props.className} rdtDisabled`;
+              } else {
+                props.onClick = this.handleSetTime(hour);
+              }
 
               return (
-                <li
-                  className={classNames({ active: isActive })}
-                  onClick={this.handleSetTime(h)} colSpan={7} key={h}
-                >
-                  {`${h}:00`}
+                <li {...props} colSpan={7} key={hour}>
+                  {`${hour}:00`}
                 </li>
               );
             })
@@ -127,7 +139,7 @@ class DaysView extends Component {
     );
   };
 
-  render () {
+  render() {
     const date = this.props.viewDate;
     const locale = date.localeData();
 

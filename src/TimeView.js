@@ -9,14 +9,14 @@ const PAD_VALUES = {
 };
 
 class TimeView extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = this.calculateState(this.props);
   }
 
   calculateState = (props) => {
-    var date = props.selectedDate || props.viewDate,
+    const date = props.selectedDate || props.viewDate,
       format = props.timeFormat,
       counters = []
     ;
@@ -31,14 +31,14 @@ class TimeView extends Component {
       }
     }
 
-    var hours = date.format('H');
+    const hours = date.format('H');
 
-    var daypart = false;
+    let daypart = false;
     if (this.state !== null && this.props.timeFormat.toLowerCase().indexOf(' a') !== -1) {
       if (this.props.timeFormat.indexOf(' A') !== -1) {
-        daypart = ( hours >= 12 ) ? 'PM' : 'AM';
+        daypart = (hours >= 12) ? 'PM' : 'AM';
       } else {
-        daypart = ( hours >= 12 ) ? 'pm' : 'am';
+        daypart = (hours >= 12) ? 'pm' : 'am';
       }
     }
 
@@ -54,9 +54,10 @@ class TimeView extends Component {
 
   renderCounter = (type) => {
     if (type !== 'daypart') {
-      var value = this.state[type];
+      let value = this.state[type];
+
       if (type === 'hours' && this.props.timeFormat.toLowerCase().indexOf(' a') !== -1) {
-        value = ( value - 1 ) % 12 + 1;
+        value = (value - 1) % 12 + 1;
 
         if (value === 0) {
           value = 12;
@@ -68,14 +69,14 @@ class TimeView extends Component {
           className: 'rdtBtn',
           onMouseDown: this.onStartClicking('increase', type),
           onContextMenu: this.disableContextMenu
-        }, <i className="fa fa-angle-up"/>),
+        }, <i className="fa fa-angle-up" />),
         React.createElement('div', { key: 'c', className: 'rdtCount' }, value),
         React.createElement('span', {
           key: 'do',
           className: 'rdtBtn',
           onMouseDown: this.onStartClicking('decrease', type),
           onContextMenu: this.disableContextMenu
-        }, <i className="fa fa-angle-down"/>)
+        }, <i className="fa fa-angle-down" />)
       ]);
     }
     return '';
@@ -88,19 +89,19 @@ class TimeView extends Component {
         className: 'rdtBtn',
         onMouseDown: this.onStartClicking('toggleDayPart', 'hours'),
         onContextMenu: this.disableContextMenu
-      }, <i className="fa fa-angle-up"/>),
+      }, <i className="fa fa-angle-up" />),
       React.createElement('div', { key: this.state.daypart, className: 'rdtCount' }, this.state.daypart),
       React.createElement('span', {
         key: 'do',
         className: 'rdtBtn',
         onMouseDown: this.onStartClicking('toggleDayPart', 'hours'),
         onContextMenu: this.disableContextMenu
-      }, <i className="fa fa-angle-down"/>)
+      }, <i className="fa fa-angle-down" />)
     ]);
   };
 
-  componentWillMount () {
-    var me = this;
+  componentWillMount() {
+    const me = this;
     this.timeConstraints = {
       hours: {
         min: 0,
@@ -129,37 +130,24 @@ class TimeView extends Component {
     this.setState(this.calculateState(this.props));
   };
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setState(this.calculateState(nextProps));
   }
 
   updateMilli = (e) => {
-    var milli = parseInt(e.target.value, 10);
+    const milli = parseInt(e.target.value, 10);
+
     if (milli === e.target.value && milli >= 0 && milli < 1000) {
       this.props.setTime('milliseconds', milli);
       this.setState({ milliseconds: milli });
     }
   };
 
-  renderHeader = () => {
-    if (!this.props.dateFormat)
-      return null;
-
-    var date = this.props.selectedDate || this.props.viewDate;
-    return React.createElement('thead', { key: 'h' }, React.createElement('tr', {},
-      React.createElement('th', {
-        className: 'rdtSwitch',
-        colSpan: 4,
-        onClick: this.props.showView('days')
-      }, date.format(this.props.dateFormat))
-    ));
-  };
-
   onStartClicking = (action, type) => {
-    var me = this;
+    const me = this;
 
     return function () {
-      var update = {};
+      const update = {};
       update[type] = me[action](type);
       me.setState(update);
 
@@ -187,30 +175,42 @@ class TimeView extends Component {
   };
 
   toggleDayPart = (type) => { // type is always 'hours'
-    var value = parseInt(this.state[type], 10) + 12;
-    if (value > this.timeConstraints[type].max)
-      value = this.timeConstraints[type].min + ( value - ( this.timeConstraints[type].max + 1 ) );
+    let value = parseInt(this.state[type], 10) + 12;
+
+    if (value > this.timeConstraints[type].max) {
+      value = this.timeConstraints[type].min + (value - (this.timeConstraints[type].max + 1));
+    }
+
     return this.pad(type, value);
   };
 
   increase = (type) => {
-    var value = parseInt(this.state[type], 10) + this.timeConstraints[type].step;
-    if (value > this.timeConstraints[type].max)
-      value = this.timeConstraints[type].min + ( value - ( this.timeConstraints[type].max + 1 ) );
+    let value = parseInt(this.state[type], 10) + this.timeConstraints[type].step;
+
+    if (value > this.timeConstraints[type].max) {
+      value = this.timeConstraints[type].min + (value - (this.timeConstraints[type].max + 1));
+    }
+
     return this.pad(type, value);
   };
 
   decrease = (type) => {
-    var value = parseInt(this.state[type], 10) - this.timeConstraints[type].step;
-    if (value < this.timeConstraints[type].min)
-      value = this.timeConstraints[type].max + 1 - ( this.timeConstraints[type].min - value );
+    let value = parseInt(this.state[type], 10) - this.timeConstraints[type].step;
+
+    if (value < this.timeConstraints[type].min) {
+      value = this.timeConstraints[type].max + 1 - (this.timeConstraints[type].min - value);
+    }
+
     return this.pad(type, value);
   };
 
   pad = (type, value) => {
-    var str = value + '';
-    while (str.length < PAD_VALUES[type])
-      str = '0' + str;
+    let str = value + '';
+
+    while (str.length < PAD_VALUES[type]) {
+      str = `0${str}`;
+    }
+
     return str;
   };
 
@@ -218,10 +218,9 @@ class TimeView extends Component {
     this.props.handleClickOutside();
   };
 
-  render () {
-    var me = this,
-      counters = []
-    ;
+  render() {
+    const me = this;
+    const counters = [];
 
     this.state.counters.forEach(function (c) {
       if (counters.length)
