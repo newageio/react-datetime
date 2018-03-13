@@ -121,7 +121,7 @@ class DaysView extends Component {
                 props.className = 'active';
               }
 
-              const isDisabled = time ? !isValid(time, selected) : true;
+              const isDisabled = time ? !isValid(time, selected) : false;
               if (isDisabled) {
                 props.className = `${props.className} rdtDisabled`;
               } else {
