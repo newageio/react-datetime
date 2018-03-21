@@ -85,18 +85,22 @@ class YearsView extends Component {
 
     return (
       <div className="rdtYears">
-        <table className="a">
+        <table>
           <thead>
           <tr>
-            <th key="prev" className="rdtPrev" onClick={this.props.subtractTime(10, 'years')}><span>‹</span></th>
-            <th key="year" className="rdtSwitch" onClick={this.props.showView('years')} colSpan={2}>
+            <th className="rdtPrev" onClick={this.props.subtractTime(10, 'years')}>
+              <i className="fa fa-angle-left" />
+            </th>
+            <th className="rdtSwitch" onClick={this.props.showView('years')}>
               {year + '-' + ( year + 9 )}
             </th>
-            <th key="next" className="rdtNext" onClick={this.props.addTime(10, 'years')}><span>›</span></th>
+            <th className="rdtNext" onClick={this.props.addTime(10, 'years')}>
+              <i className="fa fa-angle-right" />
+            </th>
           </tr>
           </thead>
         </table>
-        <table className="years" key="years">
+        <table>
           <tbody>
           {this.renderYears(year)}
           </tbody>

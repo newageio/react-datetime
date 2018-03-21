@@ -83,23 +83,27 @@ class MonthsView extends Component {
   render () {
     return (
       <div className="rdtMonths">
-        <table key="a">
+        <table>
           <thead>
           <tr>
-            <th key="prev" className="rdtPrev" onClick={this.props.subtractTime(1, 'years')}><span>‹</span></th>
+            <th className="rdtPrev" onClick={this.props.subtractTime(1, 'years')}>
+              <i className="fa fa-angle-left" />
+            </th>
             <th
-              key="year"
               className="rdtSwitch"
               onClick={this.props.showView('years')}
-              colSpan={2}
               data-value={this.props.viewDate.year()}
-            >{this.props.viewDate.year()}</th>
-            <th key="next" className="rdtNext" onClick={this.props.addTime(1, 'years')}><span>›</span></th>
+            >
+              {this.props.viewDate.year()}
+            </th>
+            <th className="rdtNext" onClick={this.props.addTime(1, 'years')}>
+              <i className="fa fa-angle-right" />
+            </th>
           </tr>
           </thead>
         </table>
-        <table key="months">
-          <tbody key="b">
+        <table>
+          <tbody>
           {this.renderMonths()}
           </tbody>
         </table>

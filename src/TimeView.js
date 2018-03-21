@@ -246,17 +246,9 @@ class TimeView extends Component {
 
     return (
       <div className="rdtTime">
-        <table>
-          <tbody key="b">
-          <tr>
-            <td>
-              <div className="rdtCounters">
-                {counters}
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <div className="rdtCounters">
+          {counters}
+        </div>
         <button
           type="button"
           onClick={this.props.closeCalendar}
