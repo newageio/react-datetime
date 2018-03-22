@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import classNames from 'classnames';
 
 class DaysView extends Component {
   getDaysOfWeek = (locale) => {
@@ -108,8 +107,8 @@ class DaysView extends Component {
 
     return (
       <div className="rdtTimes">
+        <div className="rdtTimes__title">Time Picker</div>
         <ul>
-          <li>Time Picker</li>
           {
             [...Array(24).keys()].map(hour => {
               const time = selected && selected.clone().set({ hour, minute: 0, second: 0 });
@@ -129,7 +128,7 @@ class DaysView extends Component {
               }
 
               return (
-                <li {...props} colSpan={7} key={hour}>
+                <li {...props} key={hour}>
                   {`${hour}:00`}
                 </li>
               );
@@ -145,13 +144,12 @@ class DaysView extends Component {
     const locale = date.localeData();
 
     let tableChildren = [
-      <thead key="th">
-      <tr key="h">
-        <th key="p" className="rdtPrev" onClick={this.props.subtractTime(1, 'months')}>
-          <span>‹</span>
+      <thead>
+      <tr>
+        <th className="rdtPrev" onClick={this.props.subtractTime(1, 'months')}>
+          <i className="fa fa-angle-left" />
         </th>
         <th
-          key="s"
           className="rdtSwitch"
           onClick={this.props.showView('months')}
           colSpan={5}
@@ -160,14 +158,13 @@ class DaysView extends Component {
           {locale.months(date) + ' ' + date.year()}
         </th>
         <th
-          key="n"
           className="rdtNext"
           onClick={this.props.addTime(1, 'months')}
         >
-          <span>›</span>
+          <i className="fa fa-angle-right" />
         </th>
       </tr>
-      <tr key="d">
+      <tr>
         {
           this.getDaysOfWeek(locale).map((day, index) => (
             <th key={day + index} className="dow">
@@ -177,7 +174,9 @@ class DaysView extends Component {
         }
       </tr>
       </thead>,
-      <tbody key="tb">{this.renderDays()}</tbody>
+      <tbody>
+      {this.renderDays()}
+      </tbody>
     ];
 
     return (

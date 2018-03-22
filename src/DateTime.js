@@ -5,7 +5,6 @@ import moment from 'moment';
 import assign from 'object-assign';
 import CalendarContainer from './CalendarContainer';
 import classNames from 'classnames';
-//import './DateTime.scss';
 
 const ALLOWED_SET_TIME = ['hours', 'minutes', 'seconds', 'milliseconds'];
 
