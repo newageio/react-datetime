@@ -125,7 +125,7 @@ var MonthsView = function (_Component) {
         { className: 'rdtMonths' },
         _react2.default.createElement(
           'table',
-          { key: 'a' },
+          null,
           _react2.default.createElement(
             'thead',
             null,
@@ -134,42 +134,32 @@ var MonthsView = function (_Component) {
               null,
               _react2.default.createElement(
                 'th',
-                { key: 'prev', className: 'rdtPrev', onClick: this.props.subtractTime(1, 'years') },
-                _react2.default.createElement(
-                  'span',
-                  null,
-                  '\u2039'
-                )
+                { className: 'rdtPrev', onClick: this.props.subtractTime(1, 'years') },
+                _react2.default.createElement('i', { className: 'fa fa-angle-left' })
               ),
               _react2.default.createElement(
                 'th',
                 {
-                  key: 'year',
                   className: 'rdtSwitch',
                   onClick: this.props.showView('years'),
-                  colSpan: 2,
                   'data-value': this.props.viewDate.year()
                 },
                 this.props.viewDate.year()
               ),
               _react2.default.createElement(
                 'th',
-                { key: 'next', className: 'rdtNext', onClick: this.props.addTime(1, 'years') },
-                _react2.default.createElement(
-                  'span',
-                  null,
-                  '\u203A'
-                )
+                { className: 'rdtNext', onClick: this.props.addTime(1, 'years') },
+                _react2.default.createElement('i', { className: 'fa fa-angle-right' })
               )
             )
           )
         ),
         _react2.default.createElement(
           'table',
-          { key: 'months' },
+          null,
           _react2.default.createElement(
             'tbody',
-            { key: 'b' },
+            null,
             this.renderMonths()
           )
         )
