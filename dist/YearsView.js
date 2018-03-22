@@ -118,7 +118,7 @@ var YearsView = function (_Component) {
         { className: 'rdtYears' },
         _react2.default.createElement(
           'table',
-          { className: 'a' },
+          null,
           _react2.default.createElement(
             'thead',
             null,
@@ -127,33 +127,25 @@ var YearsView = function (_Component) {
               null,
               _react2.default.createElement(
                 'th',
-                { key: 'prev', className: 'rdtPrev', onClick: this.props.subtractTime(10, 'years') },
-                _react2.default.createElement(
-                  'span',
-                  null,
-                  '\u2039'
-                )
+                { className: 'rdtPrev', onClick: this.props.subtractTime(10, 'years') },
+                _react2.default.createElement('i', { className: 'fa fa-angle-left' })
               ),
               _react2.default.createElement(
                 'th',
-                { key: 'year', className: 'rdtSwitch', onClick: this.props.showView('years'), colSpan: 2 },
+                { className: 'rdtSwitch', onClick: this.props.showView('years') },
                 year + '-' + (year + 9)
               ),
               _react2.default.createElement(
                 'th',
-                { key: 'next', className: 'rdtNext', onClick: this.props.addTime(10, 'years') },
-                _react2.default.createElement(
-                  'span',
-                  null,
-                  '\u203A'
-                )
+                { className: 'rdtNext', onClick: this.props.addTime(10, 'years') },
+                _react2.default.createElement('i', { className: 'fa fa-angle-right' })
               )
             )
           )
         ),
         _react2.default.createElement(
           'table',
-          { className: 'years', key: 'years' },
+          null,
           _react2.default.createElement(
             'tbody',
             null,

@@ -106,25 +106,9 @@ var TimeView = function (_Component) {
         'div',
         { className: 'rdtTime' },
         _react2.default.createElement(
-          'table',
-          null,
-          _react2.default.createElement(
-            'tbody',
-            { key: 'b' },
-            _react2.default.createElement(
-              'tr',
-              null,
-              _react2.default.createElement(
-                'td',
-                null,
-                _react2.default.createElement(
-                  'div',
-                  { className: 'rdtCounters' },
-                  counters
-                )
-              )
-            )
-          )
+          'div',
+          { className: 'rdtCounters' },
+          counters
         ),
         _react2.default.createElement(
           'button',
