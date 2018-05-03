@@ -16,10 +16,6 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _classnames = require('classnames');
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -141,13 +137,13 @@ var DaysView = function (_Component) {
         'div',
         { className: 'rdtTimes' },
         _react2.default.createElement(
+          'div',
+          { className: 'rdtTimes__title' },
+          'Time Picker'
+        ),
+        _react2.default.createElement(
           'ul',
           null,
-          _react2.default.createElement(
-            'li',
-            null,
-            'Time Picker'
-          ),
           [].concat(_toConsumableArray(Array(24).keys())).map(function (hour) {
             var time = selected && selected.clone().set({ hour: hour, minute: 0, second: 0 });
             var props = {
@@ -167,7 +163,7 @@ var DaysView = function (_Component) {
 
             return _react2.default.createElement(
               'li',
-              _extends({}, props, { colSpan: 7, key: hour }),
+              _extends({}, props, { key: hour }),
               hour + ':00'
             );
           })
@@ -184,23 +180,18 @@ var DaysView = function (_Component) {
 
       var tableChildren = [_react2.default.createElement(
         'thead',
-        { key: 'th' },
+        null,
         _react2.default.createElement(
           'tr',
-          { key: 'h' },
+          null,
           _react2.default.createElement(
             'th',
-            { key: 'p', className: 'rdtPrev', onClick: this.props.subtractTime(1, 'months') },
-            _react2.default.createElement(
-              'span',
-              null,
-              '\u2039'
-            )
+            { className: 'rdtPrev', onClick: this.props.subtractTime(1, 'months') },
+            _react2.default.createElement('i', { className: 'fa fa-angle-left' })
           ),
           _react2.default.createElement(
             'th',
             {
-              key: 's',
               className: 'rdtSwitch',
               onClick: this.props.showView('months'),
               colSpan: 5,
@@ -211,20 +202,15 @@ var DaysView = function (_Component) {
           _react2.default.createElement(
             'th',
             {
-              key: 'n',
               className: 'rdtNext',
               onClick: this.props.addTime(1, 'months')
             },
-            _react2.default.createElement(
-              'span',
-              null,
-              '\u203A'
-            )
+            _react2.default.createElement('i', { className: 'fa fa-angle-right' })
           )
         ),
         _react2.default.createElement(
           'tr',
-          { key: 'd' },
+          null,
           this.getDaysOfWeek(locale).map(function (day, index) {
             return _react2.default.createElement(
               'th',
@@ -235,7 +221,7 @@ var DaysView = function (_Component) {
         )
       ), _react2.default.createElement(
         'tbody',
-        { key: 'tb' },
+        null,
         this.renderDays()
       )];
 
