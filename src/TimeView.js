@@ -67,6 +67,7 @@ class TimeView extends Component {
         React.createElement('span', {
           key: 'up',
           className: 'rdtBtn',
+          onTouchStart: this.onStartClicking('increase', type),
           onMouseDown: this.onStartClicking('increase', type),
           onContextMenu: this.disableContextMenu
         }, <i className="fa fa-angle-up" />),
@@ -74,6 +75,7 @@ class TimeView extends Component {
         React.createElement('span', {
           key: 'do',
           className: 'rdtBtn',
+          onTouchStart: this.onStartClicking('decrease', type),
           onMouseDown: this.onStartClicking('decrease', type),
           onContextMenu: this.disableContextMenu
         }, <i className="fa fa-angle-down" />)
@@ -87,6 +89,7 @@ class TimeView extends Component {
       React.createElement('span', {
         key: 'up',
         className: 'rdtBtn',
+        onTouchStart: this.onStartClicking('toggleDayPart', 'hours'),
         onMouseDown: this.onStartClicking('toggleDayPart', 'hours'),
         onContextMenu: this.disableContextMenu
       }, <i className="fa fa-angle-up" />),
@@ -94,6 +97,7 @@ class TimeView extends Component {
       React.createElement('span', {
         key: 'do',
         className: 'rdtBtn',
+        onTouchStart: this.onStartClicking('toggleDayPart', 'hours'),
         onMouseDown: this.onStartClicking('toggleDayPart', 'hours'),
         onContextMenu: this.disableContextMenu
       }, <i className="fa fa-angle-down" />)
@@ -163,9 +167,11 @@ class TimeView extends Component {
         clearInterval(me.increaseTimer);
         me.props.setTime(type, me.state[type]);
         document.body.removeEventListener('mouseup', me.mouseUpListener);
+        document.body.removeEventListener('touchend', me.mouseUpListener);
       };
 
       document.body.addEventListener('mouseup', me.mouseUpListener);
+      document.body.addEventListener('touchend', me.mouseUpListener);
     };
   };
 
@@ -246,17 +252,9 @@ class TimeView extends Component {
 
     return (
       <div className="rdtTime">
-        <table>
-          <tbody key="b">
-          <tr>
-            <td>
-              <div className="rdtCounters">
-                {counters}
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <div className="rdtCounters">
+          {counters}
+        </div>
         <button
           type="button"
           onClick={this.props.closeCalendar}

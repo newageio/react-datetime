@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import classNames from 'classnames';
 
 class DaysView extends Component {
   getDaysOfWeek = (locale) => {
@@ -19,7 +18,7 @@ class DaysView extends Component {
   renderDays = () => {
     const date = this.props.viewDate;
 
-    var selected = this.props.selectedDate && this.props.selectedDate.clone(),
+    let selected = this.props.selectedDate && this.props.selectedDate.clone(),
       prevMonth = date.clone().subtract(1, 'months'),
       currentYear = date.year(),
       currentMonth = date.month(),
@@ -108,8 +107,8 @@ class DaysView extends Component {
 
     return (
       <div className="rdtTimes">
+        <div className="rdtTimes__title">Time Picker</div>
         <ul>
-          <li>Time Picker</li>
           {
             [...Array(24).keys()].map(hour => {
               const time = selected && selected.clone().set({ hour, minute: 0, second: 0 });
@@ -129,7 +128,7 @@ class DaysView extends Component {
               }
 
               return (
-                <li {...props} colSpan={7} key={hour}>
+                <li {...props} key={hour}>
                   {`${hour}:00`}
                 </li>
               );
@@ -148,7 +147,7 @@ class DaysView extends Component {
       <thead key="th">
       <tr key="h">
         <th key="p" className="rdtPrev" onClick={this.props.subtractTime(1, 'months')}>
-          <span>‹</span>
+          <i className="fa fa-angle-left" />
         </th>
         <th
           key="s"
@@ -164,17 +163,15 @@ class DaysView extends Component {
           className="rdtNext"
           onClick={this.props.addTime(1, 'months')}
         >
-          <span>›</span>
+          <i className="fa fa-angle-right" />
         </th>
       </tr>
       <tr key="d">
-        {
-          this.getDaysOfWeek(locale).map((day, index) => (
-            <th key={day + index} className="dow">
-              {day}
-            </th>
-          ))
-        }
+        {this.getDaysOfWeek(locale).map(day => (
+          <th key={day} className="dow">
+            {day}
+          </th>
+        ))}
       </tr>
       </thead>,
       <tbody key="tb">{this.renderDays()}</tbody>
