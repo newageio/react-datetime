@@ -8,10 +8,15 @@ import classNames from 'classnames';
 
 const ALLOWED_SET_TIME = ['hours', 'minutes', 'seconds', 'milliseconds'];
 
+const viewModes = Object.freeze({
+  YEARS: 'years',
+  MONTHS: 'months',
+  DAYS: 'days',
+  TIME: 'time',
+});
+
 class DateTime extends Component {
   static propTypes = {
-    // value: PropTypes.object | PropTypes.string,
-    // defaultValue: PropTypes.object | PropTypes.string,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
@@ -19,11 +24,9 @@ class DateTime extends Component {
     locale: PropTypes.string,
     utc: PropTypes.bool,
     input: PropTypes.bool,
-    // dateFormat: PropTypes.string | PropTypes.bool,
-    // timeFormat: PropTypes.string | PropTypes.bool,
     inputProps: PropTypes.object,
     timeConstraints: PropTypes.object,
-    viewMode: PropTypes.oneOf(['years', 'months', 'days', 'time']),
+    viewMode: PropTypes.oneOf([viewModes.YEARS, viewModes.MONTHS, viewModes.DAYS, viewModes.TIME]),
     isValidDate: PropTypes.func,
     open: PropTypes.bool,
     strictParsing: PropTypes.bool,
@@ -31,6 +34,8 @@ class DateTime extends Component {
     closeOnTab: PropTypes.bool,
     timePresets: PropTypes.bool,
     withTime: PropTypes.bool,
+    onNavigateBack: PropTypes.func,
+    onNavigateForward: PropTypes.func,
   };
 
   static defaultProps = {
@@ -38,14 +43,12 @@ class DateTime extends Component {
     defaultValue: '',
     inputProps: {},
     input: true,
-    onFocus: () => {
-    },
-    onBlur: () => {
-    },
-    onChange: () => {
-    },
-    onViewModeChange: () => {
-    },
+    onFocus: () => {},
+    onBlur: () => {},
+    onChange: () => {},
+    onViewModeChange: () => {},
+    onNavigateBack: () => {},
+    onNavigateForward: () => {},
     timeFormat: true,
     timeConstraints: {},
     dateFormat: true,
@@ -66,27 +69,38 @@ class DateTime extends Component {
       state.open = !this.props.input;
     }
 
-    state.currentView = this.props.dateFormat ? (this.props.viewMode || state.updateOn || 'days') : 'time';
+    state.currentView = this.props.dateFormat ?
+      (this.props.viewMode || state.updateOn || viewModes.DAYS) : viewModes.TIME;
 
     this.state = state;
   }
+
+  parseDate = (date, formats) => {
+    let parsedDate;
+
+    if (date && typeof date === 'string')
+      parsedDate = this.localMoment(date, formats.datetime);
+    else if (date)
+      parsedDate = this.localMoment(date);
+
+    if (parsedDate && !parsedDate.isValid())
+      parsedDate = null;
+
+    return parsedDate;
+  };
 
   getStateFromProps = (props) => {
     const formats = this.getFormats(props);
     const date = props.value || props.defaultValue;
     let selectedDate, viewDate, updateOn, inputValue;
 
-    if (date && typeof date === 'string') {
-      selectedDate = this.localMoment(date, formats.datetime);
-    } else if (date) {
-      selectedDate = this.localMoment(date);
-    }
+    selectedDate = this.parseDate(date, formats);
 
-    if (selectedDate && !selectedDate.isValid()) {
-      selectedDate = null;
-    }
+    viewDate = this.parseDate(props.viewDate, formats);
 
-    viewDate = selectedDate ? selectedDate.clone().startOf('month') : this.localMoment().startOf('month');
+    viewDate = selectedDate
+      ? selectedDate.clone().startOf('month')
+      : viewDate ? viewDate.clone().startOf('month') : this.localMoment().startOf('month');
 
     updateOn = this.getUpdateOn(formats);
 
@@ -127,7 +141,7 @@ class DateTime extends Component {
 
     if (formats.date === true) {
       formats.date = locale.longDateFormat('L');
-    } else if (this.getUpdateOn(formats) !== 'days') {
+    } else if (this.getUpdateOn(formats) !== viewModes.DAYS) {
       formats.time = '';
     }
 
@@ -142,14 +156,14 @@ class DateTime extends Component {
 
   getUpdateOn = (formats) => {
     if (formats.date.match(/[lLD]/)) {
-      return 'days';
+      return viewModes.DAYS;
     } else if (formats.date.indexOf('M') !== -1) {
-      return 'months';
+      return viewModes.MONTHS;
     } else if (formats.date.indexOf('Y') !== -1) {
-      return 'years';
+      return viewModes.YEARS;
     }
 
-    return 'days';
+    return viewModes.DAYS;
   };
 
   componentWillReceiveProps(nextProps) {
@@ -162,7 +176,9 @@ class DateTime extends Component {
     }
 
     if (updatedState.open === undefined) {
-      if (this.props.closeOnSelect && this.state.currentView !== 'time') {
+      if ( typeof nextProps.open !== 'undefined' ) {
+        updatedState.open = nextProps.open;
+      } else if ( this.props.closeOnSelect && this.state.currentView !== viewModes.TIME ) {
         updatedState.open = false;
       } else {
         updatedState.open = this.state.open;
@@ -200,6 +216,10 @@ class DateTime extends Component {
           updatedState.inputValue = updatedState.selectedDate.format(formats.datetime);
         }
       }
+    }
+
+    if ( nextProps.viewDate !== this.props.viewDate ) {
+      updatedState.viewDate = moment(nextProps.viewDate);
     }
     //we should only show a valid date if we are provided a isValidDate function. Removed in 2.10.3
     /*if (this.props.isValidDate) {
@@ -241,8 +261,8 @@ class DateTime extends Component {
 
   setDate = (type) => (e) => {
     const nextViews = {
-      month: 'days',
-      year: 'months'
+      month: viewModes.DAYS,
+      year: viewModes.MONTHS,
     };
 
     this.setState({
@@ -252,8 +272,23 @@ class DateTime extends Component {
     this.props.onViewModeChange(nextViews[type]);
   };
 
-  addTime = (amount, type, toSelected) => this.updateTime('add', amount, type, toSelected);
-  subtractTime = (amount, type, toSelected) => this.updateTime('subtract', amount, type, toSelected);
+  subtractTime = (amount, type, toSelected) => {
+    const me = this;
+
+    return function() {
+      me.props.onNavigateBack( amount, type );
+      me.updateTime( 'subtract', amount, type, toSelected );
+    };
+  };
+
+  addTime = (amount, type, toSelected) => {
+    const me = this;
+
+    return function() {
+      me.props.onNavigateForward( amount, type );
+      me.updateTime( 'add', amount, type, toSelected );
+    };
+  };
 
   updateTime = (op, amount, type, toSelected) => () => {
     const update = {};
@@ -355,7 +390,7 @@ class DateTime extends Component {
   };
 
   handleClickOutside = () => {
-    if (this.props.input && this.state.open && !this.props.open) {
+    if (this.props.input && this.state.open && !this.props.open && !this.props.disableOnClickOutside) {
       this.setState({ open: false }, function () {
         this.props.onBlur(this.state.selectedDate || this.state.inputValue);
       });
@@ -413,7 +448,7 @@ class DateTime extends Component {
         value: inputValue,
       }, inputProps);
       if (renderInput) {
-        children = [React.createElement('div', { key: 'i' }, renderInput(finalInputProps, this.openCalendar))];
+        children = [ React.createElement('div', { key: 'i' }, this.props.renderInput( finalInputProps, this.openCalendar, this.closeCalendar )) ];
       } else {
         children = [React.createElement('input', assign({ key: 'i' }, finalInputProps))];
       }

@@ -18,7 +18,7 @@ class DaysView extends Component {
   renderDays = () => {
     const date = this.props.viewDate;
 
-    var selected = this.props.selectedDate && this.props.selectedDate.clone(),
+    let selected = this.props.selectedDate && this.props.selectedDate.clone(),
       prevMonth = date.clone().subtract(1, 'months'),
       currentYear = date.year(),
       currentMonth = date.month(),
@@ -144,12 +144,13 @@ class DaysView extends Component {
     const locale = date.localeData();
 
     let tableChildren = [
-      <thead>
-      <tr>
-        <th className="rdtPrev" onClick={this.props.subtractTime(1, 'months')}>
+      <thead key="th">
+      <tr key="h">
+        <th key="p" className="rdtPrev" onClick={this.props.subtractTime(1, 'months')}>
           <i className="fa fa-angle-left" />
         </th>
         <th
+          key="s"
           className="rdtSwitch"
           onClick={this.props.showView('months')}
           colSpan={5}
@@ -158,25 +159,22 @@ class DaysView extends Component {
           {locale.months(date) + ' ' + date.year()}
         </th>
         <th
+          key="n"
           className="rdtNext"
           onClick={this.props.addTime(1, 'months')}
         >
           <i className="fa fa-angle-right" />
         </th>
       </tr>
-      <tr>
-        {
-          this.getDaysOfWeek(locale).map((day, index) => (
-            <th key={day + index} className="dow">
-              {day}
-            </th>
-          ))
-        }
+      <tr key="d">
+        {this.getDaysOfWeek(locale).map(day => (
+          <th key={day} className="dow">
+            {day}
+          </th>
+        ))}
       </tr>
       </thead>,
-      <tbody>
-      {this.renderDays()}
-      </tbody>
+      <tbody key="tb">{this.renderDays()}</tbody>
     ];
 
     return (
