@@ -480,8 +480,8 @@ var _initialiseProps = function _initialiseProps() {
   this.openCalendar = function (e) {
     if (!_this2.state.open) {
       _this2.setState({ open: true }, function () {
-        if (this.props.onClickOutsideDisabled) {
-          this.enableOnClickOutside();
+        if (this.props.onClickOutsideDisabled && typeof this.props.enableOnClickOutside === 'function') {
+          this.props.enableOnClickOutside();
         }
 
         this.props.onFocus(e);
@@ -491,8 +491,8 @@ var _initialiseProps = function _initialiseProps() {
 
   this.closeCalendar = function () {
     _this2.setState({ open: false }, function () {
-      if (!this.props.onClickOutsideDisabled) {
-        this.disableOnClickOutside();
+      if (!this.props.onClickOutsideDisabled && typeof this.props.disableOnClickOutside === 'function') {
+        this.props.disableOnClickOutside();
       }
 
       this.props.onBlur(this.state.selectedDate || this.state.inputValue);

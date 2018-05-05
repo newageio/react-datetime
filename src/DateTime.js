@@ -383,8 +383,8 @@ class DateTime extends Component {
   openCalendar = (e) => {
     if (!this.state.open) {
       this.setState({ open: true }, function () {
-        if (this.props.onClickOutsideDisabled) {
-          this.enableOnClickOutside();
+        if (this.props.onClickOutsideDisabled && typeof this.props.enableOnClickOutside === 'function') {
+          this.props.enableOnClickOutside();
         }
 
         this.props.onFocus(e);
@@ -394,8 +394,8 @@ class DateTime extends Component {
 
   closeCalendar = () => {
     this.setState({ open: false }, function () {
-      if (!this.props.onClickOutsideDisabled) {
-        this.disableOnClickOutside();
+      if (!this.props.onClickOutsideDisabled && typeof this.props.disableOnClickOutside === 'function') {
+        this.props.disableOnClickOutside();
       }
 
       this.props.onBlur(this.state.selectedDate || this.state.inputValue);
