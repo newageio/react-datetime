@@ -127,13 +127,7 @@ var DateTime = function (_Component) {
       if (nextProps.viewDate !== this.props.viewDate) {
         updatedState.viewDate = (0, _moment2.default)(nextProps.viewDate);
       }
-      //we should only show a valid date if we are provided a isValidDate function. Removed in 2.10.3
-      /*if (this.props.isValidDate) {
-       updatedState.viewDate = updatedState.viewDate || this.state.viewDate;
-       while (!this.props.isValidDate(updatedState.viewDate)) {
-       updatedState.viewDate = updatedState.viewDate.add(1, 'day');
-       }
-       }*/
+
       this.setState(updatedState);
     }
   }, {
@@ -222,7 +216,9 @@ DateTime.propTypes = {
   timePresets: _propTypes2.default.bool,
   withTime: _propTypes2.default.bool,
   onNavigateBack: _propTypes2.default.func,
-  onNavigateForward: _propTypes2.default.func
+  onNavigateForward: _propTypes2.default.func,
+  enableOnClickOutside: _propTypes2.default.func,
+  disableOnClickOutside: _propTypes2.default.func
 };
 DateTime.defaultProps = {
   className: '',
@@ -243,7 +239,10 @@ DateTime.defaultProps = {
   closeOnTab: true,
   utc: false,
   timePresets: false,
-  withTime: false
+  withTime: false,
+  enableOnClickOutside: null,
+  disableOnClickOutside: null,
+  onClickOutsideDisabled: false
 };
 
 var _initialiseProps = function _initialiseProps() {
@@ -481,6 +480,10 @@ var _initialiseProps = function _initialiseProps() {
   this.openCalendar = function (e) {
     if (!_this2.state.open) {
       _this2.setState({ open: true }, function () {
+        if (this.props.onClickOutsideDisabled) {
+          this.enableOnClickOutside();
+        }
+
         this.props.onFocus(e);
       });
     }
@@ -488,12 +491,16 @@ var _initialiseProps = function _initialiseProps() {
 
   this.closeCalendar = function () {
     _this2.setState({ open: false }, function () {
+      if (!this.props.onClickOutsideDisabled) {
+        this.disableOnClickOutside();
+      }
+
       this.props.onBlur(this.state.selectedDate || this.state.inputValue);
     });
   };
 
   this.handleClickOutside = function () {
-    if (_this2.props.input && _this2.state.open && !_this2.props.open && !_this2.props.disableOnClickOutside) {
+    if (_this2.props.input && _this2.state.open && !_this2.props.open && !_this2.props.onClickOutsideDisabled) {
       _this2.setState({ open: false }, function () {
         this.props.onBlur(this.state.selectedDate || this.state.inputValue);
       });

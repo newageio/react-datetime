@@ -36,6 +36,8 @@ class DateTime extends Component {
     withTime: PropTypes.bool,
     onNavigateBack: PropTypes.func,
     onNavigateForward: PropTypes.func,
+    enableOnClickOutside: PropTypes.func,
+    disableOnClickOutside: PropTypes.func,
   };
 
   static defaultProps = {
@@ -43,12 +45,18 @@ class DateTime extends Component {
     defaultValue: '',
     inputProps: {},
     input: true,
-    onFocus: () => {},
-    onBlur: () => {},
-    onChange: () => {},
-    onViewModeChange: () => {},
-    onNavigateBack: () => {},
-    onNavigateForward: () => {},
+    onFocus: () => {
+    },
+    onBlur: () => {
+    },
+    onChange: () => {
+    },
+    onViewModeChange: () => {
+    },
+    onNavigateBack: () => {
+    },
+    onNavigateForward: () => {
+    },
     timeFormat: true,
     timeConstraints: {},
     dateFormat: true,
@@ -58,6 +66,9 @@ class DateTime extends Component {
     utc: false,
     timePresets: false,
     withTime: false,
+    enableOnClickOutside: null,
+    disableOnClickOutside: null,
+    onClickOutsideDisabled: false,
   };
 
   constructor(props) {
@@ -176,9 +187,9 @@ class DateTime extends Component {
     }
 
     if (updatedState.open === undefined) {
-      if ( typeof nextProps.open !== 'undefined' ) {
+      if (typeof nextProps.open !== 'undefined') {
         updatedState.open = nextProps.open;
-      } else if ( this.props.closeOnSelect && this.state.currentView !== viewModes.TIME ) {
+      } else if (this.props.closeOnSelect && this.state.currentView !== viewModes.TIME) {
         updatedState.open = false;
       } else {
         updatedState.open = this.state.open;
@@ -218,16 +229,10 @@ class DateTime extends Component {
       }
     }
 
-    if ( nextProps.viewDate !== this.props.viewDate ) {
+    if (nextProps.viewDate !== this.props.viewDate) {
       updatedState.viewDate = moment(nextProps.viewDate);
     }
-    //we should only show a valid date if we are provided a isValidDate function. Removed in 2.10.3
-    /*if (this.props.isValidDate) {
-     updatedState.viewDate = updatedState.viewDate || this.state.viewDate;
-     while (!this.props.isValidDate(updatedState.viewDate)) {
-     updatedState.viewDate = updatedState.viewDate.add(1, 'day');
-     }
-     }*/
+
     this.setState(updatedState);
   }
 
@@ -275,18 +280,18 @@ class DateTime extends Component {
   subtractTime = (amount, type, toSelected) => {
     const me = this;
 
-    return function() {
-      me.props.onNavigateBack( amount, type );
-      me.updateTime( 'subtract', amount, type, toSelected );
+    return function () {
+      me.props.onNavigateBack(amount, type);
+      me.updateTime('subtract', amount, type, toSelected);
     };
   };
 
   addTime = (amount, type, toSelected) => {
     const me = this;
 
-    return function() {
-      me.props.onNavigateForward( amount, type );
-      me.updateTime( 'add', amount, type, toSelected );
+    return function () {
+      me.props.onNavigateForward(amount, type);
+      me.updateTime('add', amount, type, toSelected);
     };
   };
 
@@ -378,6 +383,10 @@ class DateTime extends Component {
   openCalendar = (e) => {
     if (!this.state.open) {
       this.setState({ open: true }, function () {
+        if (this.props.onClickOutsideDisabled) {
+          this.enableOnClickOutside();
+        }
+
         this.props.onFocus(e);
       });
     }
@@ -385,12 +394,16 @@ class DateTime extends Component {
 
   closeCalendar = () => {
     this.setState({ open: false }, function () {
+      if (!this.props.onClickOutsideDisabled) {
+        this.disableOnClickOutside();
+      }
+
       this.props.onBlur(this.state.selectedDate || this.state.inputValue);
     });
   };
 
   handleClickOutside = () => {
-    if (this.props.input && this.state.open && !this.props.open && !this.props.disableOnClickOutside) {
+    if (this.props.input && this.state.open && !this.props.open && !this.props.onClickOutsideDisabled) {
       this.setState({ open: false }, function () {
         this.props.onBlur(this.state.selectedDate || this.state.inputValue);
       });
@@ -448,7 +461,7 @@ class DateTime extends Component {
         value: inputValue,
       }, inputProps);
       if (renderInput) {
-        children = [ React.createElement('div', { key: 'i' }, this.props.renderInput( finalInputProps, this.openCalendar, this.closeCalendar )) ];
+        children = [React.createElement('div', { key: 'i' }, this.props.renderInput(finalInputProps, this.openCalendar, this.closeCalendar))];
       } else {
         children = [React.createElement('input', assign({ key: 'i' }, finalInputProps))];
       }
