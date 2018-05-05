@@ -62,10 +62,10 @@ var DaysView = function (_Component) {
           days = [],
           renderer = _this.props.renderDay || _this.renderDay,
           isValid = _this.props.isValidDate || _this.alwaysValidDate,
-          classes,
-          isDisabled,
-          dayProps,
-          currentDate;
+          classes = void 0,
+          isDisabled = void 0,
+          dayProps = void 0,
+          currentDate = void 0;
 
       // Go to the last week of the previous month
       prevMonth.date(prevMonth.daysInMonth()).startOf('week');
@@ -180,18 +180,19 @@ var DaysView = function (_Component) {
 
       var tableChildren = [_react2.default.createElement(
         'thead',
-        null,
+        { key: 'th' },
         _react2.default.createElement(
           'tr',
-          null,
+          { key: 'h' },
           _react2.default.createElement(
             'th',
-            { className: 'rdtPrev', onClick: this.props.subtractTime(1, 'months') },
+            { key: 'p', className: 'rdtPrev', onClick: this.props.subtractTime(1, 'months') },
             _react2.default.createElement('i', { className: 'fa fa-angle-left' })
           ),
           _react2.default.createElement(
             'th',
             {
+              key: 's',
               className: 'rdtSwitch',
               onClick: this.props.showView('months'),
               colSpan: 5,
@@ -202,6 +203,7 @@ var DaysView = function (_Component) {
           _react2.default.createElement(
             'th',
             {
+              key: 'n',
               className: 'rdtNext',
               onClick: this.props.addTime(1, 'months')
             },
@@ -210,18 +212,18 @@ var DaysView = function (_Component) {
         ),
         _react2.default.createElement(
           'tr',
-          null,
-          this.getDaysOfWeek(locale).map(function (day, index) {
+          { key: 'd' },
+          this.getDaysOfWeek(locale).map(function (day) {
             return _react2.default.createElement(
               'th',
-              { key: day + index, className: 'dow' },
+              { key: day, className: 'dow' },
               day
             );
           })
         )
       ), _react2.default.createElement(
         'tbody',
-        null,
+        { key: 'tb' },
         this.renderDays()
       )];
 

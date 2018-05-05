@@ -44,6 +44,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ALLOWED_SET_TIME = ['hours', 'minutes', 'seconds', 'milliseconds'];
 
+var viewModes = Object.freeze({
+  YEARS: 'years',
+  MONTHS: 'months',
+  DAYS: 'days',
+  TIME: 'time'
+});
+
 var DateTime = function (_Component) {
   _inherits(DateTime, _Component);
 
@@ -60,7 +67,7 @@ var DateTime = function (_Component) {
       state.open = !_this.props.input;
     }
 
-    state.currentView = _this.props.dateFormat ? _this.props.viewMode || state.updateOn || 'days' : 'time';
+    state.currentView = _this.props.dateFormat ? _this.props.viewMode || state.updateOn || viewModes.DAYS : viewModes.TIME;
 
     _this.state = state;
     return _this;
@@ -77,7 +84,9 @@ var DateTime = function (_Component) {
       }
 
       if (updatedState.open === undefined) {
-        if (this.props.closeOnSelect && this.state.currentView !== 'time') {
+        if (typeof nextProps.open !== 'undefined') {
+          updatedState.open = nextProps.open;
+        } else if (this.props.closeOnSelect && this.state.currentView !== viewModes.TIME) {
           updatedState.open = false;
         } else {
           updatedState.open = this.state.open;
@@ -113,6 +122,10 @@ var DateTime = function (_Component) {
             updatedState.inputValue = updatedState.selectedDate.format(formats.datetime);
           }
         }
+      }
+
+      if (nextProps.viewDate !== this.props.viewDate) {
+        updatedState.viewDate = (0, _moment2.default)(nextProps.viewDate);
       }
       //we should only show a valid date if we are provided a isValidDate function. Removed in 2.10.3
       /*if (this.props.isValidDate) {
@@ -152,7 +165,7 @@ var DateTime = function (_Component) {
           value: inputValue
         }, inputProps);
         if (renderInput) {
-          children = [_react2.default.createElement('div', { key: 'i' }, renderInput(finalInputProps, this.openCalendar))];
+          children = [_react2.default.createElement('div', { key: 'i' }, this.props.renderInput(finalInputProps, this.openCalendar, this.closeCalendar))];
         } else {
           children = [_react2.default.createElement('input', (0, _objectAssign2.default)({ key: 'i' }, finalInputProps))];
         }
@@ -191,8 +204,6 @@ var DateTime = function (_Component) {
 }(_react.Component);
 
 DateTime.propTypes = {
-  // value: PropTypes.object | PropTypes.string,
-  // defaultValue: PropTypes.object | PropTypes.string,
   onFocus: _propTypes2.default.func,
   onBlur: _propTypes2.default.func,
   onChange: _propTypes2.default.func,
@@ -200,18 +211,18 @@ DateTime.propTypes = {
   locale: _propTypes2.default.string,
   utc: _propTypes2.default.bool,
   input: _propTypes2.default.bool,
-  // dateFormat: PropTypes.string | PropTypes.bool,
-  // timeFormat: PropTypes.string | PropTypes.bool,
   inputProps: _propTypes2.default.object,
   timeConstraints: _propTypes2.default.object,
-  viewMode: _propTypes2.default.oneOf(['years', 'months', 'days', 'time']),
+  viewMode: _propTypes2.default.oneOf([viewModes.YEARS, viewModes.MONTHS, viewModes.DAYS, viewModes.TIME]),
   isValidDate: _propTypes2.default.func,
   open: _propTypes2.default.bool,
   strictParsing: _propTypes2.default.bool,
   closeOnSelect: _propTypes2.default.bool,
   closeOnTab: _propTypes2.default.bool,
   timePresets: _propTypes2.default.bool,
-  withTime: _propTypes2.default.bool
+  withTime: _propTypes2.default.bool,
+  onNavigateBack: _propTypes2.default.func,
+  onNavigateForward: _propTypes2.default.func
 };
 DateTime.defaultProps = {
   className: '',
@@ -222,6 +233,8 @@ DateTime.defaultProps = {
   onBlur: function onBlur() {},
   onChange: function onChange() {},
   onViewModeChange: function onViewModeChange() {},
+  onNavigateBack: function onNavigateBack() {},
+  onNavigateForward: function onNavigateForward() {},
   timeFormat: true,
   timeConstraints: {},
   dateFormat: true,
@@ -236,6 +249,16 @@ DateTime.defaultProps = {
 var _initialiseProps = function _initialiseProps() {
   var _this2 = this;
 
+  this.parseDate = function (date, formats) {
+    var parsedDate = void 0;
+
+    if (date && typeof date === 'string') parsedDate = _this2.localMoment(date, formats.datetime);else if (date) parsedDate = _this2.localMoment(date);
+
+    if (parsedDate && !parsedDate.isValid()) parsedDate = null;
+
+    return parsedDate;
+  };
+
   this.getStateFromProps = function (props) {
     var formats = _this2.getFormats(props);
     var date = props.value || props.defaultValue;
@@ -244,17 +267,11 @@ var _initialiseProps = function _initialiseProps() {
         updateOn = void 0,
         inputValue = void 0;
 
-    if (date && typeof date === 'string') {
-      selectedDate = _this2.localMoment(date, formats.datetime);
-    } else if (date) {
-      selectedDate = _this2.localMoment(date);
-    }
+    selectedDate = _this2.parseDate(date, formats);
 
-    if (selectedDate && !selectedDate.isValid()) {
-      selectedDate = null;
-    }
+    viewDate = _this2.parseDate(props.viewDate, formats);
 
-    viewDate = selectedDate ? selectedDate.clone().startOf('month') : _this2.localMoment().startOf('month');
+    viewDate = selectedDate ? selectedDate.clone().startOf('month') : viewDate ? viewDate.clone().startOf('month') : _this2.localMoment().startOf('month');
 
     updateOn = _this2.getUpdateOn(formats);
 
@@ -295,7 +312,7 @@ var _initialiseProps = function _initialiseProps() {
 
     if (formats.date === true) {
       formats.date = locale.longDateFormat('L');
-    } else if (_this2.getUpdateOn(formats) !== 'days') {
+    } else if (_this2.getUpdateOn(formats) !== viewModes.DAYS) {
       formats.time = '';
     }
 
@@ -310,14 +327,14 @@ var _initialiseProps = function _initialiseProps() {
 
   this.getUpdateOn = function (formats) {
     if (formats.date.match(/[lLD]/)) {
-      return 'days';
+      return viewModes.DAYS;
     } else if (formats.date.indexOf('M') !== -1) {
-      return 'months';
+      return viewModes.MONTHS;
     } else if (formats.date.indexOf('Y') !== -1) {
-      return 'years';
+      return viewModes.YEARS;
     }
 
-    return 'days';
+    return viewModes.DAYS;
   };
 
   this.onInputChange = function (e) {
@@ -353,8 +370,8 @@ var _initialiseProps = function _initialiseProps() {
   this.setDate = function (type) {
     return function (e) {
       var nextViews = {
-        month: 'days',
-        year: 'months'
+        month: viewModes.DAYS,
+        year: viewModes.MONTHS
       };
 
       _this2.setState({
@@ -365,12 +382,22 @@ var _initialiseProps = function _initialiseProps() {
     };
   };
 
-  this.addTime = function (amount, type, toSelected) {
-    return _this2.updateTime('add', amount, type, toSelected);
+  this.subtractTime = function (amount, type, toSelected) {
+    var me = _this2;
+
+    return function () {
+      me.props.onNavigateBack(amount, type);
+      me.updateTime('subtract', amount, type, toSelected);
+    };
   };
 
-  this.subtractTime = function (amount, type, toSelected) {
-    return _this2.updateTime('subtract', amount, type, toSelected);
+  this.addTime = function (amount, type, toSelected) {
+    var me = _this2;
+
+    return function () {
+      me.props.onNavigateForward(amount, type);
+      me.updateTime('add', amount, type, toSelected);
+    };
   };
 
   this.updateTime = function (op, amount, type, toSelected) {
@@ -466,7 +493,7 @@ var _initialiseProps = function _initialiseProps() {
   };
 
   this.handleClickOutside = function () {
-    if (_this2.props.input && _this2.state.open && !_this2.props.open) {
+    if (_this2.props.input && _this2.state.open && !_this2.props.open && !_this2.props.disableOnClickOutside) {
       _this2.setState({ open: false }, function () {
         this.props.onBlur(this.state.selectedDate || this.state.inputValue);
       });

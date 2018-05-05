@@ -179,11 +179,13 @@ var _initialiseProps = function _initialiseProps() {
       return _react2.default.createElement('div', { key: type, className: 'rdtCounter' }, [_react2.default.createElement('span', {
         key: 'up',
         className: 'rdtBtn',
+        onTouchStart: _this2.onStartClicking('increase', type),
         onMouseDown: _this2.onStartClicking('increase', type),
         onContextMenu: _this2.disableContextMenu
       }, _react2.default.createElement('i', { className: 'fa fa-angle-up' })), _react2.default.createElement('div', { key: 'c', className: 'rdtCount' }, value), _react2.default.createElement('span', {
         key: 'do',
         className: 'rdtBtn',
+        onTouchStart: _this2.onStartClicking('decrease', type),
         onMouseDown: _this2.onStartClicking('decrease', type),
         onContextMenu: _this2.disableContextMenu
       }, _react2.default.createElement('i', { className: 'fa fa-angle-down' }))]);
@@ -195,11 +197,13 @@ var _initialiseProps = function _initialiseProps() {
     return _react2.default.createElement('div', { key: 'dayPart', className: 'rdtCounter' }, [_react2.default.createElement('span', {
       key: 'up',
       className: 'rdtBtn',
+      onTouchStart: _this2.onStartClicking('toggleDayPart', 'hours'),
       onMouseDown: _this2.onStartClicking('toggleDayPart', 'hours'),
       onContextMenu: _this2.disableContextMenu
     }, _react2.default.createElement('i', { className: 'fa fa-angle-up' })), _react2.default.createElement('div', { key: _this2.state.daypart, className: 'rdtCount' }, _this2.state.daypart), _react2.default.createElement('span', {
       key: 'do',
       className: 'rdtBtn',
+      onTouchStart: _this2.onStartClicking('toggleDayPart', 'hours'),
       onMouseDown: _this2.onStartClicking('toggleDayPart', 'hours'),
       onContextMenu: _this2.disableContextMenu
     }, _react2.default.createElement('i', { className: 'fa fa-angle-down' }))]);
@@ -234,9 +238,11 @@ var _initialiseProps = function _initialiseProps() {
         clearInterval(me.increaseTimer);
         me.props.setTime(type, me.state[type]);
         document.body.removeEventListener('mouseup', me.mouseUpListener);
+        document.body.removeEventListener('touchend', me.mouseUpListener);
       };
 
       document.body.addEventListener('mouseup', me.mouseUpListener);
+      document.body.addEventListener('touchend', me.mouseUpListener);
     };
   };
 

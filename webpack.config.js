@@ -1,12 +1,10 @@
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
+  mode: 'development',
   devtool: 'cheap-module-eval-source-map',
-  entry: [
-    'webpack-hot-middleware/client',
-    './src/index'
-  ],
+  entry: ['./src/index.js'],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
@@ -16,11 +14,12 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin()
   ],
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
-      include: path.join(__dirname, 'src')
-    },
+    rules: [
+      {
+        test: /\.js$/,
+        loaders: ['babel-loader'],
+        include: path.join(__dirname, 'src')
+      },
       {
         test: /\.css/,
         loaders: ['style-loader', 'css-loader'],
@@ -29,15 +28,9 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          {
-            loader: "style-loader"
-          },
-          {
-            loader: "css-loader",
-          },
-          {
-            loader: "sass-loader"
-          }
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'sass-loader' }
         ]
       }]
   }
