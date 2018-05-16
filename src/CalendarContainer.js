@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import MonthsView from './MonthsView';
 import YearsView from './YearsView';
 import DaysView from './DaysView';
@@ -9,13 +9,13 @@ class CalendarContainer extends Component {
     switch (this.props.view) {
       case 'days':
         return (
-          <div>
+          <Fragment>
             <DaysView {...this.props.viewProps} />
             {
               this.props.viewProps.withTime &&
               <TimeView {...this.props.viewProps} />
             }
-          </div>
+          </Fragment>
         );
       case 'months':
         return <MonthsView {...this.props.viewProps} />;

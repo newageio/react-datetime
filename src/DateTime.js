@@ -295,7 +295,7 @@ class DateTime extends Component {
     };
   };
 
-  updateTime = (op, amount, type, toSelected) => () => {
+  updateTime = (op, amount, type, toSelected) => {
     const update = {};
     const date = toSelected ? 'selectedDate' : 'viewDate';
 

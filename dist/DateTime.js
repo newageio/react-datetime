@@ -400,14 +400,12 @@ var _initialiseProps = function _initialiseProps() {
   };
 
   this.updateTime = function (op, amount, type, toSelected) {
-    return function () {
-      var update = {};
-      var date = toSelected ? 'selectedDate' : 'viewDate';
+    var update = {};
+    var date = toSelected ? 'selectedDate' : 'viewDate';
 
-      update[date] = _this2.state[date].clone()[op](amount, type);
+    update[date] = _this2.state[date].clone()[op](amount, type);
 
-      _this2.setState(update);
-    };
+    _this2.setState(update);
   };
 
   this.setTime = function (type, value) {

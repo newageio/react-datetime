@@ -49,7 +49,7 @@ var CalendarContainer = function (_Component) {
       switch (this.props.view) {
         case 'days':
           return _react2.default.createElement(
-            'div',
+            _react.Fragment,
             null,
             _react2.default.createElement(_DaysView2.default, this.props.viewProps),
             this.props.viewProps.withTime && _react2.default.createElement(_TimeView2.default, this.props.viewProps)
