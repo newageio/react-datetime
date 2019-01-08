@@ -415,15 +415,24 @@ var _initialiseProps = function _initialiseProps() {
         inputFormat = _state2.inputFormat;
 
     var date = (selectedDate || viewDate).clone();
-    var nextType = null;
-    var index = ALLOWED_SET_TIME.indexOf(type) + 1;
+    var timeSetter = function timeSetter(type, value) {
+      var nextType = null;
+      var index = ALLOWED_SET_TIME.indexOf(type) + 1;
 
-    // It is needed to set all the time properties
-    // to not to reset the time
-    date[type](value);
-    for (; index < ALLOWED_SET_TIME.length; index++) {
-      nextType = ALLOWED_SET_TIME[index];
-      date[nextType](date[nextType]());
+      // It is needed to set all the time properties
+      // to not to reset the time
+      date[type](value);
+      for (; index < ALLOWED_SET_TIME.length; index++) {
+        nextType = ALLOWED_SET_TIME[index];
+        date[nextType](date[nextType]());
+      }
+    };
+    if (Array.isArray(type) && Array.isArray(value)) {
+      type.forEach(function (typeItem, index) {
+        return timeSetter(typeItem, value[index]);
+      });
+    } else {
+      timeSetter(type, value);
     }
 
     if (!_this2.props.value) {
