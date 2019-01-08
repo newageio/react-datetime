@@ -1,6 +1,6 @@
 {
   "name": "newage-react-datetime",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "react-datetime",
   "main": "dist/DateTime.js",
   "scripts": {
