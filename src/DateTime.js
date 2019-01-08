@@ -307,15 +307,22 @@ class DateTime extends Component {
   setTime = (type, value) => {
     const { selectedDate, viewDate, inputFormat } = this.state;
     let date = (selectedDate || viewDate).clone();
-    let nextType = null;
-    let index = ALLOWED_SET_TIME.indexOf(type) + 1;
+    const timeSetter = (type, value) => {
+      let nextType = null;
+      let index = ALLOWED_SET_TIME.indexOf(type) + 1;
 
-    // It is needed to set all the time properties
-    // to not to reset the time
-    date[type](value);
-    for (; index < ALLOWED_SET_TIME.length; index++) {
-      nextType = ALLOWED_SET_TIME[index];
-      date[nextType](date[nextType]());
+      // It is needed to set all the time properties
+      // to not to reset the time
+      date[type](value);
+      for (; index < ALLOWED_SET_TIME.length; index++) {
+        nextType = ALLOWED_SET_TIME[index];
+        date[nextType](date[nextType]());
+      }
+    }
+    if (Array.isArray(type) && Array.isArray(value)) {
+      type.forEach((typeItem, index) => timeSetter(typeItem, value[index]));
+    } else {
+      timeSetter(type, value);
     }
 
     if (!this.props.value) {

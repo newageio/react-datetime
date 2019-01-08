@@ -87,8 +87,8 @@ class DaysView extends Component {
 
   handleClickOutside = () => this.props.handleClickOutside();
 
-  handleSetTime = (value) => () => {
-    this.props.setTime('hours', value);
+  handleSetTime = (value) => () => {    
+    this.props.setTime(['hours', 'minutes'], [value, 0]);
   };
 
   renderTimePresets = () => {
