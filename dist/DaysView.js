@@ -117,7 +117,7 @@ var DaysView = function (_Component) {
       return _this.props.handleClickOutside();
     }, _this.handleSetTime = function (value) {
       return function () {
-        _this.props.setTime('hours', value);
+        _this.props.setTime(['hours', 'minutes'], [value, 0]);
       };
     }, _this.renderTimePresets = function () {
       var isValid = _this.props.isValidDate || _this.alwaysValidDate;
